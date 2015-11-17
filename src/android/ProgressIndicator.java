@@ -95,25 +95,26 @@ public class ProgressIndicator extends CordovaPlugin {
     }
 
     public void showSimple(Boolean dim){
-        this.showLock = true;
         cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
-                if (ProgressIndicator.this.showLock)
-                    activityIndicator = AndroidProgressHUD.show(
-                            ProgressIndicator.this.cordova.getActivity(), null, true, false, null);
+                if (activityIndicator != null){
+                    activityIndicator.dismiss();
+                }
+                activityIndicator = AndroidProgressHUD.show(
+                        ProgressIndicator.this.cordova.getActivity(), null, true, false, null);
             }
         });
     }
 
     public void showSimpleWithLabel(Boolean dim, String text){
         this.text = text;
-        this.showLock = true;
-
         cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
-                if (ProgressIndicator.this.showLock)
-                    activityIndicator = AndroidProgressHUD.show(
-                            ProgressIndicator.this.cordova.getActivity(), ProgressIndicator.this.text, true, false, null);
+                if (activityIndicator != null){
+                    activityIndicator.dismiss();
+                }
+                activityIndicator = AndroidProgressHUD.show(
+                        ProgressIndicator.this.cordova.getActivity(), ProgressIndicator.this.text, true, false, null);
             }
         });
     }
@@ -129,14 +130,18 @@ public class ProgressIndicator extends CordovaPlugin {
         }
         progressIndicator.setCancelable(false);
         progressIndicator.show();
-        CountDownTimer mCountDownTimer;
+        final CountDownTimer mCountDownTimer;
         progress = 0;
         mCountDownTimer=new CountDownTimer(timeout, timeout/100) {
             @Override
             public void onTick(long millisUntilFinished) {
                 Log.v("Log_tag", "Tick of Progress"+ progress + millisUntilFinished);
                 progress++;
-                progressIndicator.setProgress(progress);
+                if(progressIndicator != null) {
+                    progressIndicator.setProgress(progress);
+                }else{
+                    this.cancel();
+                }
             }
             @Override
             public void onFinish() {
@@ -162,7 +167,11 @@ public class ProgressIndicator extends CordovaPlugin {
             public void onTick(long millisUntilFinished) {
                 Log.v("Log_tag", "Tick of Progress"+ progress + millisUntilFinished);
                 progress++;
-                progressIndicator.setProgress(progress);
+                if (progressIndicator != null) {
+                    progressIndicator.setProgress(progress);
+                }else{
+                    this.cancel();
+                }
             }
             @Override
             public void onFinish() {

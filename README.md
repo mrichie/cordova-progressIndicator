@@ -4,7 +4,7 @@ This plugin allows you to show a native Progress Indicator on iOS and Android
 # Install
 
 ```
-cordova plugin add cordova-plugin-indicator
+cordova plugin add https://github.com/mrichie/cordova-progressIndicator.git
 ```
 
 ## Screenshots
